@@ -111,7 +111,9 @@ double Acimut(const double dec, const double latitud, const double hra,
                            cos(altitud * M_PI / 180)};
   if (cuenta > 1.0) cuenta = 1.0;
   else if (cuenta < -1) cuenta = -1.0;
-  double acimut{acos(cuenta) * 180 / M_PI};
+  double acimut{0.0};
+  if (hra >= 0) acimut = 360 - (acos(cuenta) * 180 / M_PI);
+  else acimut = acos(cuenta) * 180 / M_PI;
   return acimut;
 }
 
@@ -121,9 +123,9 @@ double Acimut(const double dec, const double latitud, const double hra,
  * @return salida
  */
 int Salida(const double latitud, const double declinacion, const double tc) {
-  int salida{static_cast<int>(12.0 -
+  int salida{static_cast<int>(floor(12.0 -
              ((1 / 15.0) * 180 / M_PI * acos(-tan(latitud * M_PI / 180) * tan(declinacion * M_PI / 180))) -
-             (tc / 60.0))};
+             (tc / 60.0)))};
   return salida;
 }
 
@@ -133,9 +135,9 @@ int Salida(const double latitud, const double declinacion, const double tc) {
  * @return puesta
  */
 int Puesta(const double latitud, const double declinacion, const double tc) {
-  int puesta {static_cast<int>(12.0 +
+  int puesta {static_cast<int>(ceil(12.0 +
               ((1 / 15.0) * 180 / M_PI * acos(-tan(latitud * M_PI / 180) * tan(declinacion * M_PI / 180))) -
-              (tc / 60.0))};
+              (tc / 60.0)))};
   return puesta;
 } 
 
