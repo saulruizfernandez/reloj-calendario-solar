@@ -139,7 +139,58 @@ int Puesta(const double latitud, const double declinacion, const double tc) {
               ((1 / 15.0) * 180 / M_PI * acos(-tan(latitud * M_PI / 180) * tan(declinacion * M_PI / 180))) -
               (tc / 60.0)))};
   return puesta;
-} 
+}
+
+/**
+ * @brief Función que calcula la longitude de la sombra del gnomon
+ * 
+ * @return longitud_sombra
+ */
+double LongitudSombra(const double altitud, const double altura_gnomon) {
+  double longitud_sombra{tan(altitud * M_PI / 180) * altura_gnomon};
+  return longitud_sombra;
+}
+
+// Estructura que representa un punto en el plano cartesiano
+struct Punto {
+  double x;
+  double y;
+};
+
+/**
+ * @brief Función que calcula el punto (x, y) donde se proyecta la sombra en un instante
+ * 
+ * @return Punto
+ */
+Punto CalculaPunto(const double longitud_sombra, const double acimut, const Punto& pos_gnomon) {
+  Punto punto;
+  const double angulo{((acimut + 180.0) < 360.0)? (acimut + 180.0) : (acimut - 180.0)};
+  double modulo_x;
+  double modulo_y;
+  // Distingo los cuatro cuadrantes en los que se puede proyectar la sombra
+  if (angulo >= 0 && angulo < 90) {
+    modulo_x = abs(longitud_sombra * sin(angulo * M_PI / 180));
+    modulo_y = abs(longitud_sombra * cos(angulo * M_PI / 180));
+    punto.x = pos_gnomon.x + modulo_x;
+    punto.y = pos_gnomon.y + modulo_y;
+  } else if (angulo >= 90 && angulo < 180) {
+    modulo_x = abs(longitud_sombra * sin((180 - angulo) * M_PI / 180));
+    modulo_y = abs(longitud_sombra * cos((180 - angulo) * M_PI / 180));
+    punto.x = pos_gnomon.x + modulo_x;
+    punto.y = pos_gnomon.y - modulo_y;
+  } else if (angulo >= 180 && angulo < 270) {
+    modulo_x = abs(longitud_sombra * sin((angulo - 180) * M_PI / 180));
+    modulo_y = abs(longitud_sombra * cos((angulo - 180) * M_PI / 180));
+    punto.x = pos_gnomon.x - modulo_x;
+    punto.y = pos_gnomon.y - modulo_y;
+  } else if (angulo >= 270 && angulo < 360) {
+    modulo_x = abs(longitud_sombra * sin((360 - angulo) * M_PI / 180));
+    modulo_y = abs(longitud_sombra * cos((360 - angulo) * M_PI / 180));
+    punto.x = pos_gnomon.x - modulo_x;
+    punto.y = pos_gnomon.y + modulo_y;
+  }
+  return punto;
+}
 
 int main() {
   std::cout << "**PROGRAMA QUE MUESTRA LOS ÁNGULOS SOLARES PARA UNA LAT, LON**\n";
