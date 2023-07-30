@@ -147,7 +147,7 @@ int Puesta(const double latitud, const double declinacion, const double tc) {
  * @return longitud_sombra
  */
 double LongitudSombra(const double altitud, const double altura_gnomon) {
-  double longitud_sombra{tan(altitud * M_PI / 180) * altura_gnomon};
+  double longitud_sombra{altura_gnomon / tan(altitud * M_PI / 180)};
   return longitud_sombra;
 }
 
@@ -160,34 +160,34 @@ struct Punto {
 /**
  * @brief Función que calcula el punto (x, y) donde se proyecta la sombra en un instante
  * 
- * @return Punto
+ * @return punto
  */
-Punto CalculaPunto(const double longitud_sombra, const double acimut, const Punto& pos_gnomon) {
+Punto CalculaPunto(const double longitud_sombra, const double acimut) {
   Punto punto;
   const double angulo{((acimut + 180.0) < 360.0)? (acimut + 180.0) : (acimut - 180.0)};
   double modulo_x;
   double modulo_y;
   // Distingo los cuatro cuadrantes en los que se puede proyectar la sombra
   if (angulo >= 0 && angulo < 90) {
-    modulo_x = abs(longitud_sombra * sin(angulo * M_PI / 180));
-    modulo_y = abs(longitud_sombra * cos(angulo * M_PI / 180));
-    punto.x = pos_gnomon.x + modulo_x;
-    punto.y = pos_gnomon.y + modulo_y;
+    modulo_x = fabs(longitud_sombra * sin(angulo * M_PI / 180));
+    modulo_y = fabs(longitud_sombra * cos(angulo * M_PI / 180));
+    punto.x = modulo_x;
+    punto.y = modulo_y;
   } else if (angulo >= 90 && angulo < 180) {
-    modulo_x = abs(longitud_sombra * sin((180 - angulo) * M_PI / 180));
-    modulo_y = abs(longitud_sombra * cos((180 - angulo) * M_PI / 180));
-    punto.x = pos_gnomon.x + modulo_x;
-    punto.y = pos_gnomon.y - modulo_y;
+    modulo_x = fabs(longitud_sombra * sin((180 - angulo) * M_PI / 180));
+    modulo_y = fabs(longitud_sombra * cos((180 - angulo) * M_PI / 180));
+    punto.x = modulo_x;
+    punto.y = -modulo_y;
   } else if (angulo >= 180 && angulo < 270) {
-    modulo_x = abs(longitud_sombra * sin((angulo - 180) * M_PI / 180));
-    modulo_y = abs(longitud_sombra * cos((angulo - 180) * M_PI / 180));
-    punto.x = pos_gnomon.x - modulo_x;
-    punto.y = pos_gnomon.y - modulo_y;
+    modulo_x = fabs(longitud_sombra * sin((angulo - 180) * M_PI / 180));
+    modulo_y = fabs(longitud_sombra * cos((angulo - 180) * M_PI / 180));
+    punto.x = -modulo_x;
+    punto.y = -modulo_y;
   } else if (angulo >= 270 && angulo < 360) {
-    modulo_x = abs(longitud_sombra * sin((360 - angulo) * M_PI / 180));
-    modulo_y = abs(longitud_sombra * cos((360 - angulo) * M_PI / 180));
-    punto.x = pos_gnomon.x - modulo_x;
-    punto.y = pos_gnomon.y + modulo_y;
+    modulo_x = fabs(longitud_sombra * sin((360 - angulo) * M_PI / 180));
+    modulo_y = fabs(longitud_sombra * cos((360 - angulo) * M_PI / 180));
+    punto.x = -modulo_x;
+    punto.y = modulo_y;
   }
   return punto;
 }
@@ -200,8 +200,14 @@ int main() {
   std::cout << "Introduce el huso horario (-12/+12)\n";
   int huso_horario;
   std::cin >> huso_horario;
+  std::cout << "Introduce la altura del gnomon en metros\n";
+  double altura_gnomon;
+  std::cin >> altura_gnomon;
+
   int lstm{Lstm(huso_horario)}, hra;
-  double eot, tc, lst, dec, altitud, acimut;
+  double eot, tc, lst, dec, altitud, acimut, longitud_sombra, x, y;
+  Punto punto;
+
   // Comienza a calcular los ángulos
   for (int i{0}; i < 365; ++i) {
     if (i == 171) std::cout << "\nSolsticio de verano -> " << "DIA " << i << "\n";
@@ -218,6 +224,10 @@ int main() {
       altitud = Altitud(dec, latitud, hra);
       acimut = Acimut(dec, latitud, hra, altitud);
       std::cout << j << ":00 -> Altitud: " << altitud << "º, Azimut: " << acimut << "º\n";
+      longitud_sombra = LongitudSombra(altitud, altura_gnomon);
+      punto = CalculaPunto(longitud_sombra, acimut);
+      std::cout << "x: " << punto.x << ", y: " << punto.y << "\n";
+      std::cout << "Longitud de la sombra: " << longitud_sombra << "\n";
     }
   }
   return 0;
