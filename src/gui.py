@@ -39,5 +39,6 @@ entrada_alt.place(relx = 0.25, rely = 0.55, anchor = "w")
 
 # Campo de texto para anunciar un error en la entrada de datos
 error_label = Label(ventana, text = "Alguno/os de los datos introducidos no son correctos...", fg = "red")
+error_label_bool = False # El mensaje de error comienza desactivado
 
 ventana.mainloop()

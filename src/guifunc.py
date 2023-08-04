@@ -7,6 +7,10 @@ def ComprobarDatos(latitud, longitud, altura_gnomon):
   if (altura_gnomon < 0): return False
   return True
 
+# Función que obtiene la gráfica a partir de los cálculos y la inserta en la ventana
+def ObtenerGrafica(huso, latitud, longitud, altura_gnomon):
+  
+
 # Función que se ejecuta al pulsar el botón "Calcular reloj"
 def CalcularReloj(huso_boton_drop, entrada_lat, entrada_lon, entrada_alt, error_label, error_label_bool):
   huso = huso_boton_drop.get()
@@ -20,5 +24,5 @@ def CalcularReloj(huso_boton_drop, entrada_lat, entrada_lon, entrada_alt, error_
   else:
     if error_label_bool:
       error_label.place_forget()
-
-    ObtenerGrafica(huso, latitud, longitud, altura_gnomon)
+      error_label_bool = False
+      ObtenerGrafica(huso, latitud, longitud, altura_gnomon)

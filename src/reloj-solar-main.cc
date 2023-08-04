@@ -12,18 +12,21 @@
 #include "reloj-solar.h"
 
 #include <fstream>
+#include <string>
 
-int main() {
+int main(int argc, char* argv[]) {
+  std::fstream fichero_datos;
   //std::cout << "**PROGRAMA QUE MUESTRA LOS ÁNGULOS SOLARES PARA UNA LAT, LON**\n";
   //std::cout << "Introduce la latitud y longitud del lugar en formato: x.xx x.xx\n";
   double latitud, longitud;
-  std::cin >> latitud >> longitud;
+  latitud = std::stod(argv[1]);
+  longitud = std::stod(argv[2]);
   //std::cout << "Introduce el huso horario (-12/+12)\n";
   int huso_horario;
-  std::cin >> huso_horario;
+  huso_horario = std::stoi(argv[3]);
   //std::cout << "Introduce la altura del gnomon en metros\n";
   double altura_gnomon;
-  std::cin >> altura_gnomon;
+  altura_gnomon = std::stod(argv[4]);
 
   RelojSolar mireloj{latitud, longitud, huso_horario, altura_gnomon};
 
@@ -31,12 +34,13 @@ int main() {
   double eot, tc, lst, dec, altitud, acimut, longitud_sombra, x, y;
   Punto punto;
 
+  fichero_datos.open("./datos_reloj.txt", std::ios_base::trunc);
   // Comienza a calcular los ángulos
   for (int i{0}; i < 365; ++i) {
     if (i == 171) std::cout << "Solsticio de verano\n";
-    else if (i == 266) std::cout << "Equinoccio de otoño\n";
-    else if (i == 355) std::cout << "Solsticio de invierno\n";
-    else if (i == 79) std::cout << "Equinoccio de primavera\n";
+    else if (i == 266) fichero_datos << "Equinoccio de otoño\n";
+    else if (i == 355) fichero_datos << "Solsticio de invierno\n";
+    else if (i == 79) fichero_datos << "Equinoccio de primavera\n";
     else continue;
     eot = mireloj.Eot(i);
     tc = mireloj.Tc(longitud, lstm, eot);
@@ -47,13 +51,14 @@ int main() {
       altitud = mireloj.Altitud(dec, latitud, hra);
       acimut = mireloj.Acimut(dec, latitud, hra, altitud);
       // Escribo la hora, altitud, acimut
-      std::cout << j << " " << altitud << " " << acimut << "\n";
+      fichero_datos << j << " " << altitud << " " << acimut << "\n";
       longitud_sombra = mireloj.LongitudSombra(altitud, altura_gnomon);
       punto = mireloj.CalculaPunto(longitud_sombra, acimut);
       // Escribo la coordenada 'x' y la 'y'
-      std::cout << punto.x << " " << punto.y << "\n";
+      fichero_datos << punto.x << " " << punto.y << "\n";
       //std::cout << "Longitud de la sombra: " << longitud_sombra << "\n";
     }
   }
+  fichero_datos.close();
   return 0;
 }
