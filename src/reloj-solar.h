@@ -23,13 +23,6 @@ struct Punto {
 
 class RelojSolar {
  public:
-  // Constructor por defecto
-  RelojSolar() {
-    latitud = 0;
-    longitud = 0;
-    huso_horario = 0;
-    altitud_gnomon = 0;
-  }
   // Constructor con parámetros
   RelojSolar(const double latitud, const double longitud,
              const int huso_horario, const double altitud_gnomon)
@@ -57,10 +50,10 @@ class RelojSolar {
   Punto CalculaPunto(const double longitud_sombra, const double acimut) const;
 
  private:
-  double latitud;         // Latitud donde se encuentra el reloj solar
-  double longitud;        // Longitud donde se encuentra el reloj solar
-  int huso_horario;       // Huso horario del reloj solar
-  double altitud_gnomon;  // Altura del gnomon en metros
+  double latitud{0.0};         // Latitud donde se encuentra el reloj solar
+  double longitud{0.0};        // Longitud donde se encuentra el reloj solar
+  int huso_horario{0};         // Huso horario del reloj solar
+  double altitud_gnomon{0.0};  // Altura del gnomon en metros
 };
 
 #endif

@@ -1,0 +1,1 @@
+/usr/bin/c++ -rdynamic CMakeFiles/reloj.dir/src/reloj-solar-main.cc.o CMakeFiles/reloj.dir/src/reloj-solar.cc.o -o reloj 

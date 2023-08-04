@@ -15,7 +15,7 @@
 #include <string>
 
 int main(int argc, char* argv[]) {
-  std::fstream fichero_datos;
+  std::ofstream fichero_datos;
   //std::cout << "**PROGRAMA QUE MUESTRA LOS ÁNGULOS SOLARES PARA UNA LAT, LON**\n";
   //std::cout << "Introduce la latitud y longitud del lugar en formato: x.xx x.xx\n";
   double latitud, longitud;
@@ -31,13 +31,13 @@ int main(int argc, char* argv[]) {
   RelojSolar mireloj{latitud, longitud, huso_horario, altura_gnomon};
 
   int lstm{mireloj.Lstm(huso_horario)}, hra;
-  double eot, tc, lst, dec, altitud, acimut, longitud_sombra, x, y;
+  double eot, tc, lst, dec, altitud, acimut, longitud_sombra;
   Punto punto;
 
-  fichero_datos.open("./datos_reloj.txt", std::ios_base::trunc);
+  fichero_datos.open("datos_reloj.txt", std::ios_base::trunc);
   // Comienza a calcular los ángulos
   for (int i{0}; i < 365; ++i) {
-    if (i == 171) std::cout << "Solsticio de verano\n";
+    if (i == 171) fichero_datos << "Solsticio de verano\n";
     else if (i == 266) fichero_datos << "Equinoccio de otoño\n";
     else if (i == 355) fichero_datos << "Solsticio de invierno\n";
     else if (i == 79) fichero_datos << "Equinoccio de primavera\n";
@@ -51,11 +51,11 @@ int main(int argc, char* argv[]) {
       altitud = mireloj.Altitud(dec, latitud, hra);
       acimut = mireloj.Acimut(dec, latitud, hra, altitud);
       // Escribo la hora, altitud, acimut
-      fichero_datos << j << " " << altitud << " " << acimut << "\n";
+      fichero_datos << j << " " << altitud << " " << acimut;
       longitud_sombra = mireloj.LongitudSombra(altitud, altura_gnomon);
       punto = mireloj.CalculaPunto(longitud_sombra, acimut);
       // Escribo la coordenada 'x' y la 'y'
-      fichero_datos << punto.x << " " << punto.y << "\n";
+      fichero_datos << " " << punto.x << " " << punto.y << "\n";
       //std::cout << "Longitud de la sombra: " << longitud_sombra << "\n";
     }
   }

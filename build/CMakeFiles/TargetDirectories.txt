@@ -1,0 +1,3 @@
+/home/saul/Documents/ASTRO/RELOJ_SOLAR/build/CMakeFiles/reloj.dir
+/home/saul/Documents/ASTRO/RELOJ_SOLAR/build/CMakeFiles/edit_cache.dir
+/home/saul/Documents/ASTRO/RELOJ_SOLAR/build/CMakeFiles/rebuild_cache.dir

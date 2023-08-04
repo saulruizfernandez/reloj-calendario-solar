@@ -4,7 +4,7 @@
 
 cmake_minimum_required(VERSION 3.1)
 
-project(complejos
+project(relojsolar
     VERSION 1.0
     DESCRIPTION "Archivo de CMake para reloj solar"
     LANGUAGES CXX)
