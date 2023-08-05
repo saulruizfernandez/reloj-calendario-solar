@@ -41,4 +41,11 @@ entrada_alt.place(relx = 0.25, rely = 0.55, anchor = "w")
 error_label = Label(ventana, text = "Alguno/os de los datos introducidos no son correctos...", fg = "red")
 error_label_bool = False # El mensaje de error comienza desactivado
 
+# Botón "Calcular reloj"
+boton_calcular = Button(ventana, text = "Calcular Reloj", command = CalcularReloj(huso_boton_drop, entrada_lat,
+                                                                                  entrada_lon, entrada_alt,
+                                                                                  error_label, error_label_bool),
+                        background = "blue", foreground = "white")
+boton_calcular.place(relx = 0.25, rely = 0.65, anchor = "center")
+
 ventana.mainloop()
