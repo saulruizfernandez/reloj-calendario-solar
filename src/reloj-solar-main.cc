@@ -34,14 +34,11 @@ int main(int argc, char* argv[]) {
   double eot, tc, lst, dec, altitud, acimut, longitud_sombra;
   Punto punto;
 
-  fichero_datos.open("datos_reloj.txt", std::ios_base::trunc);
+  fichero_datos.open("datos_reloj.csv", std::ios_base::trunc);
+  fichero_datos << "Hora Altitud Acimut X Y\n";
   // Comienza a calcular los ángulos
   for (int i{0}; i < 365; ++i) {
-    if (i == 171) fichero_datos << "Solsticio de verano\n";
-    else if (i == 266) fichero_datos << "Equinoccio de otoño\n";
-    else if (i == 355) fichero_datos << "Solsticio de invierno\n";
-    else if (i == 79) fichero_datos << "Equinoccio de primavera\n";
-    else continue;
+    if (i != 171 && i != 266 && i != 355 && i != 79) continue;
     eot = mireloj.Eot(i);
     tc = mireloj.Tc(longitud, lstm, eot);
     dec = mireloj.Dec(i);
