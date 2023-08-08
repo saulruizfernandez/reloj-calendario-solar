@@ -34,19 +34,25 @@ def ObtenerGrafica(huso, latitud, longitud, altura_gnomon):
   # Guardo las coordenadas en dos arrays de numpy
   x = df['X'].values
   y = df['Y'].values
-  delimitadores = EncontrarEstaciones(df['Hora'].values)
+  horas = df['Hora'].values
+  delimitadores = EncontrarEstaciones(horas)
   # Equinoccio de primavera
-  plt.scatter(x[0:delimitadores[0]], y[0:delimitadores[0]], color = 'r')
-  plt.plot(x[0:delimitadores[0]], y[0:delimitadores[0]], 'r')
+  plt.scatter(x[:delimitadores[0] + 1], y[:delimitadores[0] + 1], color = 'r')
+  plt.plot(x[:delimitadores[0] + 1], y[:delimitadores[0] + 1], 'r', label = "Equinoccio primavera")
   # Solsticio de verano
-  plt.scatter(x[delimitadores[0] + 1:delimitadores[1]], y[delimitadores[0] + 1:delimitadores[1]], color = 'g')
-  plt.plot(x[delimitadores[0] + 1:delimitadores[1]], y[delimitadores[0] + 1:delimitadores[1]], 'g')
+  plt.scatter(x[delimitadores[0] + 1:delimitadores[1] + 1], y[delimitadores[0] + 1:delimitadores[1] + 1], color = 'g')
+  plt.plot(x[delimitadores[0] + 1:delimitadores[1] + 1], y[delimitadores[0] + 1:delimitadores[1] + 1], 'g', label = "Solsticio verano")
   # Equinoccio de otoño
-  plt.scatter(x[delimitadores[1] + 1:delimitadores[2]], y[delimitadores[1] + 1:delimitadores[2]], color = 'b')
-  plt.plot(x[delimitadores[1] + 1:delimitadores[2]], y[delimitadores[1] + 1:delimitadores[2]], 'b')
+  plt.scatter(x[delimitadores[1] + 1:delimitadores[2] + 1], y[delimitadores[1] + 1:delimitadores[2] + 1], color = 'b')
+  plt.plot(x[delimitadores[1] + 1:delimitadores[2] + 1], y[delimitadores[1] + 1:delimitadores[2] + 1], 'b', label = "Equinoccio otoño")
   # Solsticio de invierno
   plt.scatter(x[delimitadores[2] + 1:], y[delimitadores[2] + 1:], color = 'tab:purple')
-  plt.plot(x[delimitadores[2] + 1:], y[delimitadores[2] + 1:], 'tab:purple')
+  plt.plot(x[delimitadores[2] + 1:], y[delimitadores[2] + 1:], 'tab:purple', label = "Solsticio invierno")
+  plt.legend(loc = "lower right")
+  for i in range(len(x)): plt.annotate(str(horas[i]), (x[i], y[i]))
+  plt.ylim(altura_gnomon * -7.5, altura_gnomon * 7.5)
+  plt.xlim(altura_gnomon * -7.5, altura_gnomon * 7.5)
+  plt.title("Reloj Solar")
   plt.show()
 
 # Función que se ejecuta al pulsar el botón "Calcular reloj"
