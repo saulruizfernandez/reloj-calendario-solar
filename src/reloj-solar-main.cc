@@ -46,10 +46,12 @@ int main(int argc, char* argv[]) {
       lst = mireloj.Lst(j, tc);
       hra = mireloj.Hra(lst);
       altitud = mireloj.Altitud(dec, latitud, hra);
+      if (altitud < 0) continue;
       acimut = mireloj.Acimut(dec, latitud, hra, altitud);
       // Escribo la hora, altitud, acimut
-      fichero_datos << j << " " << altitud << " " << acimut;
       longitud_sombra = mireloj.LongitudSombra(altitud, altura_gnomon);
+      if (abs(longitud_sombra) > (altura_gnomon * 15)) continue;
+      fichero_datos << j << " " << altitud << " " << acimut;
       punto = mireloj.CalculaPunto(longitud_sombra, acimut);
       // Escribo la coordenada 'x' y la 'y'
       fichero_datos << " " << punto.x << " " << punto.y << "\n";
