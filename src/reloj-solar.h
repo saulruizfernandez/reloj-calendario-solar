@@ -48,6 +48,9 @@ class RelojSolar {
              const double tc) const;
   double LongitudSombra(const double altitud, const double altura_gnomon) const;
   Punto CalculaPunto(const double longitud_sombra, const double acimut) const;
+  // Métodos para el reloj solar vertical
+  double ObtenerAnguloVertical(const double altitud, const double acimut) const;
+  Punto CalculaPuntoVertical(const double longitud_sombra, const double angulo_vertical) const;
 
  private:
   double latitud{0.0};         // Latitud donde se encuentra el reloj solar

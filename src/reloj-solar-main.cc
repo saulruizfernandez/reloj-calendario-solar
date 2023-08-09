@@ -28,6 +28,7 @@ int main(int argc, char* argv[]) {
   //std::cout << "Introduce la altura del gnomon en metros\n";
   double altura_gnomon;
   altura_gnomon = std::stod(argv[4]);
+  int reloj_horizontal{std::stoi(argv[5])};
 
   RelojSolar mireloj{latitud, longitud, huso_horario, altura_gnomon};
 
@@ -48,11 +49,19 @@ int main(int argc, char* argv[]) {
       hra = mireloj.Hra(lst);
       altitud = mireloj.Altitud(dec, latitud, hra);
       if (altitud < 0) continue;
+      // if (!reloj_horizontal && (acimut > 90) && (acimut < 270)) continue;
       acimut = mireloj.Acimut(dec, latitud, hra, altitud);
       // Escribo la hora, altitud, acimut
-      longitud_sombra = mireloj.LongitudSombra(altitud, altura_gnomon);
       fichero_datos_1 << j << " " << altitud << " " << acimut;
-      punto = mireloj.CalculaPunto(longitud_sombra, acimut);
+      if (!reloj_horizontal) {
+        double angulo_long{(acimut >= 270 && acimut <= 360)? (acimut - 270):(90 - acimut)};
+        longitud_sombra = mireloj.LongitudSombra(angulo_long, altura_gnomon);
+        double angulo_vertical{mireloj.ObtenerAnguloVertical(altitud, acimut)};
+        punto = mireloj.CalculaPuntoVertical(longitud_sombra, angulo_vertical);
+      } else {
+        longitud_sombra = mireloj.LongitudSombra(altitud, altura_gnomon);
+        punto = mireloj.CalculaPunto(longitud_sombra, acimut);
+      }
       // Escribo la coordenada 'x' y la 'y'
       fichero_datos_1 << " " << punto.x << " " << punto.y << "\n";
       //std::cout << "Longitud de la sombra: " << longitud_sombra << "\n";
@@ -74,11 +83,19 @@ int main(int argc, char* argv[]) {
       hra = mireloj.Hra(lst);
       altitud = mireloj.Altitud(dec, latitud, hra);
       if (altitud < 0) continue;
+      if (!reloj_horizontal && (acimut > 90) && (acimut < 180)) continue;
       acimut = mireloj.Acimut(dec, latitud, hra, altitud);
-      longitud_sombra = mireloj.LongitudSombra(altitud, altura_gnomon);
-      punto = mireloj.CalculaPunto(longitud_sombra, acimut);
+      if (!reloj_horizontal) {
+        double angulo_long{(acimut >= 270 && acimut <= 360)? (acimut - 270):(90 - acimut)};
+        longitud_sombra = mireloj.LongitudSombra(angulo_long, altura_gnomon);
+        double angulo_vertical{mireloj.ObtenerAnguloVertical(altitud, acimut)};
+        punto = mireloj.CalculaPuntoVertical(longitud_sombra, angulo_vertical);
+      } else {
+        longitud_sombra = mireloj.LongitudSombra(altitud, altura_gnomon);
+        punto = mireloj.CalculaPunto(longitud_sombra, acimut);
+      }
       // Escribo la coordenada 'x' y la 'y'
-      fichero_datos_2 << punto.x << " " << punto.y << "\n";
+      fichero_datos_2 << " " << punto.x << " " << punto.y << "\n";
     }
   }
   fichero_datos_2.close();

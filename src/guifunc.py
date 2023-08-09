@@ -27,9 +27,9 @@ def EncontrarEstaciones(horas):
   return delimitadores
 
 # Función que obtiene la gráfica a partir de los cálculos y la inserta en la ventana
-def ObtenerGrafica(huso, latitud, longitud, altura_gnomon):
+def ObtenerGrafica(huso, latitud, longitud, altura_gnomon, tipo):
   direccion_abs = os.getcwd()
-  comando = "cd " + direccion_abs + "; cd ../build; ./reloj " + str(latitud) + " " + str(longitud) + " " + str(huso) + " " + str(altura_gnomon)
+  comando = "cd " + direccion_abs + "; cd ../build; ./reloj " + str(latitud) + " " + str(longitud) + " " + str(huso) + " " + str(altura_gnomon) + " " + str(tipo)
   proceso = subprocess.Popen(comando, shell = True)
   proceso.wait() # Espera a que se cree el fichero
   df = pd.read_csv("../build/datos_reloj.csv", delimiter = ' ', usecols = ['Hora', 'X', 'Y'])
@@ -69,8 +69,10 @@ def ObtenerGrafica(huso, latitud, longitud, altura_gnomon):
   plt.show()
 
 # Función que se ejecuta al pulsar el botón "Calcular reloj"
-def CalcularReloj(huso_boton_drop, entrada_lat, entrada_lon, entrada_alt, error_label):
+def CalcularReloj(huso_boton_drop, entrada_lat, entrada_lon, entrada_alt, error_label, tipo_drop):
   huso = huso_boton_drop.get()
+  tipo = 0
+  if (tipo_drop.get() == "Horizontal"): tipo = 1
   try:
     latitud = float(entrada_lat.get())
     longitud = float(entrada_lon.get())
@@ -83,4 +85,4 @@ def CalcularReloj(huso_boton_drop, entrada_lat, entrada_lon, entrada_alt, error_
     error_label.place(relx = 0.5, rely = 0.6, anchor = "w")
   else:
     error_label.place_forget()
-    ObtenerGrafica(huso, latitud, longitud, altura_gnomon)
+    ObtenerGrafica(huso, latitud, longitud, altura_gnomon, tipo)

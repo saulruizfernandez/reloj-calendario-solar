@@ -194,3 +194,39 @@ Punto RelojSolar::CalculaPunto(const double longitud_sombra,
   }
   return punto;
 }
+
+/**
+ * @brief Función que calcula el ángulo de proyección de la sombra en un reloj vertical
+ *
+ * @return angulo_vertical
+ */
+double RelojSolar::ObtenerAnguloVertical(const double altitud, const double acimut) const {
+  double ang_horiz{(acimut >= 270 && acimut <= 360)? (acimut - 270):(90 - acimut)};
+  double ang_vert{altitud};
+  double mod_x{cos(ang_horiz * M_PI / 180)};
+  double mod_y{sin(ang_vert * M_PI / 180)};
+  double angulo_vertical{atan(mod_y / mod_x) + ((acimut >= 270.0 && acimut <= 360.0)? 180.0:270.0)};
+  return angulo_vertical;
+}
+
+/**
+ * @brief Función que calcula el punto (x, y) donde se proyecta la sombra en un reloj vertical
+ *
+ * @return punto_vertical
+ */
+Punto RelojSolar::CalculaPuntoVertical(const double longitud_sombra, const double angulo_vertical) const {
+  double modulo_x, modulo_y;
+  Punto punto_vertical;
+  if (angulo_vertical >= 180 && angulo_vertical <= 270) {
+    modulo_x = fabs(longitud_sombra * sin((angulo_vertical - 180) * M_PI / 180));
+    modulo_y = fabs(longitud_sombra * cos((angulo_vertical - 180) * M_PI / 180));
+    punto_vertical.x = -modulo_x;
+    punto_vertical.y = -modulo_y;
+  } else if (angulo_vertical > 270 && angulo_vertical <= 360) {
+    modulo_x = fabs(longitud_sombra * sin((360 - angulo_vertical) * M_PI / 180));
+    modulo_y = fabs(longitud_sombra * cos((360 - angulo_vertical) * M_PI / 180));
+    punto_vertical.x = modulo_x;
+    punto_vertical.y = -modulo_y;
+  }
+  return punto_vertical;
+}
