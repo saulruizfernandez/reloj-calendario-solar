@@ -15,7 +15,8 @@
 #include <string>
 
 int main(int argc, char* argv[]) {
-  std::ofstream fichero_datos;
+  std::ofstream fichero_datos_1;
+  std::ofstream fichero_datos_2;
   //std::cout << "**PROGRAMA QUE MUESTRA LOS ÁNGULOS SOLARES PARA UNA LAT, LON**\n";
   //std::cout << "Introduce la latitud y longitud del lugar en formato: x.xx x.xx\n";
   double latitud, longitud;
@@ -34,9 +35,9 @@ int main(int argc, char* argv[]) {
   double eot, tc, lst, dec, altitud, acimut, longitud_sombra;
   Punto punto;
 
-  fichero_datos.open("datos_reloj.csv", std::ios_base::trunc);
-  fichero_datos << "Hora Altitud Acimut X Y\n";
-  // Comienza a calcular los ángulos
+  fichero_datos_1.open("datos_reloj.csv", std::ios_base::trunc);
+  fichero_datos_1 << "Hora Altitud Acimut X Y\n";
+  // Comienza a calcular las curvas de proyección
   for (int i{0}; i < 365; ++i) {
     if (i != 171 && i != 266 && i != 355 && i != 79) continue;
     eot = mireloj.Eot(i);
@@ -50,13 +51,36 @@ int main(int argc, char* argv[]) {
       acimut = mireloj.Acimut(dec, latitud, hra, altitud);
       // Escribo la hora, altitud, acimut
       longitud_sombra = mireloj.LongitudSombra(altitud, altura_gnomon);
-      fichero_datos << j << " " << altitud << " " << acimut;
+      fichero_datos_1 << j << " " << altitud << " " << acimut;
       punto = mireloj.CalculaPunto(longitud_sombra, acimut);
       // Escribo la coordenada 'x' y la 'y'
-      fichero_datos << " " << punto.x << " " << punto.y << "\n";
+      fichero_datos_1 << " " << punto.x << " " << punto.y << "\n";
       //std::cout << "Longitud de la sombra: " << longitud_sombra << "\n";
     }
   }
-  fichero_datos.close();
+  fichero_datos_1.close();
+
+  // Calcula la variación de la sommbra por horas a lo largo del año
+  fichero_datos_2.open("datos_variaciones.csv", std::ios_base::trunc);
+  fichero_datos_2 << "X Y\n";
+  // Comienza a calcular las curvas de proyección
+  for (int i{0}; i < 365; i += 5) {
+    if (i == 171 && i == 266 && i == 355 && i == 79) continue;
+    eot = mireloj.Eot(i);
+    tc = mireloj.Tc(longitud, lstm, eot);
+    dec = mireloj.Dec(i);
+    for (int j{mireloj.Salida(latitud, dec, tc)}; j <= mireloj.Puesta(latitud, dec, tc); ++j) {
+      lst = mireloj.Lst(j, tc);
+      hra = mireloj.Hra(lst);
+      altitud = mireloj.Altitud(dec, latitud, hra);
+      if (altitud < 0) continue;
+      acimut = mireloj.Acimut(dec, latitud, hra, altitud);
+      longitud_sombra = mireloj.LongitudSombra(altitud, altura_gnomon);
+      punto = mireloj.CalculaPunto(longitud_sombra, acimut);
+      // Escribo la coordenada 'x' y la 'y'
+      fichero_datos_2 << punto.x << " " << punto.y << "\n";
+    }
+  }
+  fichero_datos_2.close();
   return 0;
 }

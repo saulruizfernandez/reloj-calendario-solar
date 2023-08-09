@@ -3,6 +3,8 @@ import subprocess
 import os
 import pandas as pd
 import matplotlib.pyplot as plt
+import matplotlib.image as image
+from matplotlib.offsetbox import (OffsetImage, AnnotationBbox)
 
 # Función que comprueba que los datos introducidos por el usuario son correctos
 def ComprobarDatos(latitud, longitud, altura_gnomon):
@@ -31,11 +33,13 @@ def ObtenerGrafica(huso, latitud, longitud, altura_gnomon):
   proceso = subprocess.Popen(comando, shell = True)
   proceso.wait() # Espera a que se cree el fichero
   df = pd.read_csv("../build/datos_reloj.csv", delimiter = ' ', usecols = ['Hora', 'X', 'Y'])
+  df_variaciones = pd.read_csv("../build/datos_variaciones.csv", delimiter = ' ')
   # Guardo las coordenadas en dos arrays de numpy
   x = df['X'].values
   y = df['Y'].values
   horas = df['Hora'].values
   delimitadores = EncontrarEstaciones(horas)
+  plt.figure(figsize = (15, 9))
   # Equinoccio de primavera
   plt.scatter(x[:delimitadores[0] + 1], y[:delimitadores[0] + 1], color = 'r')
   plt.plot(x[:delimitadores[0] + 1], y[:delimitadores[0] + 1], 'r', label = "Equinoccio primavera")
@@ -52,7 +56,16 @@ def ObtenerGrafica(huso, latitud, longitud, altura_gnomon):
   for i in range(len(x)): plt.annotate(str(horas[i]), (x[i], y[i]))
   plt.ylim(altura_gnomon * -7.5, altura_gnomon * 7.5)
   plt.xlim(altura_gnomon * -7.5, altura_gnomon * 7.5)
-  plt.title("Reloj Solar")
+  plt.ylabel("Posición en el eje Y")
+  plt.xlabel("Posición en el eje X")
+  plt.title("RELOJ SOLAR")
+  # Mustro las variaciones en la proyección de la sombra a lo largo del año
+  plt.scatter(df_variaciones['X'], df_variaciones['Y'], color = 'k', s = 0.1)
+  # Imagen de la rosa de los vientos
+  rosa_vientos = OffsetImage(image.imread('Rosa_de_los_vientos.png'), zoom = 0.2)
+  ann_box = AnnotationBbox(rosa_vientos, (altura_gnomon * 6, altura_gnomon * 5.3), frameon = False)
+  ax = plt.subplot()
+  ax.add_artist(ann_box)
   plt.show()
 
 # Función que se ejecuta al pulsar el botón "Calcular reloj"
