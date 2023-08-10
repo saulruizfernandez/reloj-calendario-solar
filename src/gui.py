@@ -49,11 +49,18 @@ tipo_boton_drop.set("Horizontal")
 tipo_drop_menu = OptionMenu(ventana, tipo_boton_drop, *tipo_op)
 tipo_drop_menu.place(relx = 0.25, rely = 0.65, anchor = "w")
 
+# Entry rotación con respecto al norte
+rot_label = Label(ventana, text = "Rotación N(xx.xº)")
+rot_label.place(relx = 0.15, rely = 0.75, anchor = "w")
+entrada_rot = Entry(ventana)
+entrada_rot.place(relx = 0.25, rely = 0.75, anchor = "w")
+
 # Botón "Calcular reloj"
 boton_calcular = Button(ventana, text = "Calcular Reloj", command=lambda: CalcularReloj(huso_boton_drop, entrada_lat,
                                                                                         entrada_lon, entrada_alt,
-                                                                                        error_label, tipo_boton_drop),
+                                                                                        error_label, tipo_boton_drop,
+                                                                                        entrada_rot),
                         background = "blue", foreground = "white")
-boton_calcular.place(relx = 0.25, rely = 0.75, anchor = "center")
+boton_calcular.place(relx = 0.25, rely = 0.85, anchor = "center")
 
 ventana.mainloop()

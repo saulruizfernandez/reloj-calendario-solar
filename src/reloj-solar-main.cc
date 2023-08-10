@@ -29,6 +29,7 @@ int main(int argc, char* argv[]) {
   double altura_gnomon;
   altura_gnomon = std::stod(argv[4]);
   int reloj_horizontal{std::stoi(argv[5])};
+  double rotacion_norte{std::stod(argv[6])};
 
   RelojSolar mireloj{latitud, longitud, huso_horario, altura_gnomon};
 
@@ -50,6 +51,7 @@ int main(int argc, char* argv[]) {
       altitud = mireloj.Altitud(dec, latitud, hra);
       if (altitud < 0) continue;
       acimut = mireloj.Acimut(dec, latitud, hra, altitud);
+      acimut += rotacion_norte;
       // Escribo la etiqueta de estación, hora, altitud, acimut
       if (!reloj_horizontal && acimut > 90.0 && acimut < 270.0) continue;
       fichero_datos_1 << i << " " << j << " " << altitud << " " << acimut;
@@ -84,6 +86,7 @@ int main(int argc, char* argv[]) {
       altitud = mireloj.Altitud(dec, latitud, hra);
       if (altitud < 0) continue;
       acimut = mireloj.Acimut(dec, latitud, hra, altitud);
+      acimut += rotacion_norte;
       if (!reloj_horizontal) {
         if (acimut > 90 && acimut < 270) continue;
         double angulo_long{(acimut >= 270 && acimut <= 360)? (acimut - 270):(90 - acimut)};

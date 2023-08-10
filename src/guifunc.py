@@ -7,19 +7,21 @@ import matplotlib.image as image
 from matplotlib.offsetbox import (OffsetImage, AnnotationBbox)
 
 # Función que comprueba que los datos introducidos por el usuario son correctos
-def ComprobarDatos(latitud, longitud, altura_gnomon):
+def ComprobarDatos(latitud, longitud, altura_gnomon, rot):
   if ((latitud < -90.0) or (latitud > 90)):
     return False
   if ((longitud < -180.0) or (longitud > 180)):
     return False
   if (altura_gnomon < 0):
     return False
+  if ((rot > 360.0) or (rot < 0.0)):
+    return False
   return True
 
 # Función que obtiene la gráfica a partir de los cálculos y la inserta en la ventana
-def ObtenerGrafica(huso, latitud, longitud, altura_gnomon, tipo):
+def ObtenerGrafica(huso, latitud, longitud, altura_gnomon, tipo, rot):
   direccion_abs = os.getcwd()
-  comando = "cd " + direccion_abs + "; cd ../build; ./reloj " + str(latitud) + " " + str(longitud) + " " + str(huso) + " " + str(altura_gnomon) + " " + str(tipo)
+  comando = "cd " + direccion_abs + "; cd ../build; ./reloj " + str(latitud) + " " + str(longitud) + " " + str(huso) + " " + str(altura_gnomon) + " " + str(tipo) + " " + str(rot)
   proceso = subprocess.Popen(comando, shell = True)
   proceso.wait() # Espera a que se cree el fichero
   df = pd.read_csv("../build/datos_reloj.csv", delimiter = ' ', usecols = ['Id', 'Hora', 'X', 'Y'])
@@ -82,7 +84,7 @@ def ObtenerGrafica(huso, latitud, longitud, altura_gnomon, tipo):
   plt.show()
 
 # Función que se ejecuta al pulsar el botón "Calcular reloj"
-def CalcularReloj(huso_boton_drop, entrada_lat, entrada_lon, entrada_alt, error_label, tipo_drop):
+def CalcularReloj(huso_boton_drop, entrada_lat, entrada_lon, entrada_alt, error_label, tipo_drop, rotacion_norte):
   huso = huso_boton_drop.get()
   tipo = 0
   if (tipo_drop.get() == "Horizontal"): tipo = 1
@@ -90,12 +92,14 @@ def CalcularReloj(huso_boton_drop, entrada_lat, entrada_lon, entrada_alt, error_
     latitud = float(entrada_lat.get())
     longitud = float(entrada_lon.get())
     altura_gnomon = float(entrada_alt.get())
+    rot = float(rotacion_norte.get())
   except:
     latitud = -1
     longitud = -1
     altura_gnomon = -1
-  if (ComprobarDatos(latitud, longitud, altura_gnomon) == False):
+    rot = -1
+  if (ComprobarDatos(latitud, longitud, altura_gnomon, rot) == False):
     error_label.place(relx = 0.5, rely = 0.6, anchor = "w")
   else:
     error_label.place_forget()
-    ObtenerGrafica(huso, latitud, longitud, altura_gnomon, tipo)
+    ObtenerGrafica(huso, latitud, longitud, altura_gnomon, tipo, rot)
