@@ -37,7 +37,7 @@ int main(int argc, char* argv[]) {
   Punto punto;
 
   fichero_datos_1.open("datos_reloj.csv", std::ios_base::trunc);
-  fichero_datos_1 << "Hora Altitud Acimut X Y\n";
+  fichero_datos_1 << "Id Hora Altitud Acimut X Y\n";
   // Comienza a calcular las curvas de proyección
   for (int i{0}; i < 365; ++i) {
     if (i != 171 && i != 266 && i != 355 && i != 79) continue;
@@ -49,11 +49,11 @@ int main(int argc, char* argv[]) {
       hra = mireloj.Hra(lst);
       altitud = mireloj.Altitud(dec, latitud, hra);
       if (altitud < 0) continue;
-      // if (!reloj_horizontal && (acimut > 90) && (acimut < 270)) continue;
       acimut = mireloj.Acimut(dec, latitud, hra, altitud);
-      // Escribo la hora, altitud, acimut
-      fichero_datos_1 << j << " " << altitud << " " << acimut;
+      // Escribo la etiqueta de estación, hora, altitud, acimut
+      fichero_datos_1 << i << " " << j << " " << altitud << " " << acimut;
       if (!reloj_horizontal) {
+        if (acimut > 90 && acimut < 270) continue;
         double angulo_long{(acimut >= 270 && acimut <= 360)? (acimut - 270):(90 - acimut)};
         longitud_sombra = mireloj.LongitudSombra(angulo_long, altura_gnomon);
         double angulo_vertical{mireloj.ObtenerAnguloVertical(altitud, acimut)};
@@ -83,9 +83,9 @@ int main(int argc, char* argv[]) {
       hra = mireloj.Hra(lst);
       altitud = mireloj.Altitud(dec, latitud, hra);
       if (altitud < 0) continue;
-      if (!reloj_horizontal && (acimut > 90) && (acimut < 180)) continue;
       acimut = mireloj.Acimut(dec, latitud, hra, altitud);
       if (!reloj_horizontal) {
+        if (acimut > 90 && acimut < 270) continue;
         double angulo_long{(acimut >= 270 && acimut <= 360)? (acimut - 270):(90 - acimut)};
         longitud_sombra = mireloj.LongitudSombra(angulo_long, altura_gnomon);
         double angulo_vertical{mireloj.ObtenerAnguloVertical(altitud, acimut)};

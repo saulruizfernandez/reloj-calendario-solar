@@ -16,42 +16,55 @@ def ComprobarDatos(latitud, longitud, altura_gnomon):
     return False
   return True
 
-# Función que indica el comienzo de cada curva de proyección de la sombra
-def EncontrarEstaciones(horas):
-  delimitadores = []
-  hora_ant = horas[0]
-  for i in range(1, len(horas)):
-    if hora_ant > horas[i]:
-      delimitadores.append(i - 1)
-    hora_ant = horas[i]
-  return delimitadores
-
 # Función que obtiene la gráfica a partir de los cálculos y la inserta en la ventana
 def ObtenerGrafica(huso, latitud, longitud, altura_gnomon, tipo):
   direccion_abs = os.getcwd()
-  comando = "cd " + direccion_abs + "; cd ../build; ./reloj " + str(latitud) + " " + str(longitud) + " " + str(huso) + " " + str(altura_gnomon) + " " + str(tipo)
+  comando = "cd " + direccion_abs + "; cd ../build; make; ./reloj " + str(latitud) + " " + str(longitud) + " " + str(huso) + " " + str(altura_gnomon) + " " + str(tipo)
   proceso = subprocess.Popen(comando, shell = True)
   proceso.wait() # Espera a que se cree el fichero
-  df = pd.read_csv("../build/datos_reloj.csv", delimiter = ' ', usecols = ['Hora', 'X', 'Y'])
+  df = pd.read_csv("../build/datos_reloj.csv", delimiter = ' ', usecols = ['Id', 'Hora', 'X', 'Y'])
   df_variaciones = pd.read_csv("../build/datos_variaciones.csv", delimiter = ' ')
   # Guardo las coordenadas en dos arrays de numpy
   x = df['X'].values
   y = df['Y'].values
   horas = df['Hora'].values
-  delimitadores = EncontrarEstaciones(horas)
+  id_estaciones = df['Id'].values
+  # Creo un array por cada solsticio/equinoccio
+  equinoccio_primavera_x = []
+  equinoccio_primavera_y = []
+  solsticio_verano_x = []
+  solsticio_verano_y = []
+  equinoccio_otonio_x = []
+  equinoccio_otonio_y = []
+  solsticio_invierno_x = []
+  solsticio_invierno_y = []
+  for i in range(0, len(horas) - 1):
+    if id_estaciones[i] == 79:
+      equinoccio_primavera_x.append(x[i])
+      equinoccio_primavera_y.append(y[i])
+    elif id_estaciones[i] == 171:
+      solsticio_verano_x.append(x[i])
+      solsticio_verano_y.append(y[i])
+    elif id_estaciones[i] == 266:
+      equinoccio_otonio_x.append(x[i])
+      equinoccio_otonio_y.append(y[i])
+    else:
+      solsticio_invierno_x.append(x[i])
+      solsticio_invierno_y.append(y[i])
+
   plt.figure(figsize = (15, 9))
   # Equinoccio de primavera
-  plt.scatter(x[:delimitadores[0] + 1], y[:delimitadores[0] + 1], color = 'r')
-  plt.plot(x[:delimitadores[0] + 1], y[:delimitadores[0] + 1], 'r', label = "Equinoccio primavera")
+  plt.scatter(equinoccio_primavera_x, equinoccio_primavera_y, color = 'r')
+  plt.plot(equinoccio_primavera_x, equinoccio_primavera_y, 'r', label = "Equinoccio primavera")
   # Solsticio de verano
-  plt.scatter(x[delimitadores[0] + 1:delimitadores[1] + 1], y[delimitadores[0] + 1:delimitadores[1] + 1], color = 'g')
-  plt.plot(x[delimitadores[0] + 1:delimitadores[1] + 1], y[delimitadores[0] + 1:delimitadores[1] + 1], 'g', label = "Solsticio verano")
+  plt.scatter(solsticio_verano_x, solsticio_verano_y, color = 'g')
+  plt.plot(solsticio_verano_x, solsticio_verano_y, 'g', label = "Solsticio verano")
   # Equinoccio de otoño
-  plt.scatter(x[delimitadores[1] + 1:delimitadores[2] + 1], y[delimitadores[1] + 1:delimitadores[2] + 1], color = 'b')
-  plt.plot(x[delimitadores[1] + 1:delimitadores[2] + 1], y[delimitadores[1] + 1:delimitadores[2] + 1], 'b', label = "Equinoccio otoño")
+  plt.scatter(equinoccio_otonio_x, equinoccio_otonio_y, color = 'b')
+  plt.plot(equinoccio_otonio_x, equinoccio_otonio_y, 'b', label = "Equinoccio otoño")
   # Solsticio de invierno
-  plt.scatter(x[delimitadores[2] + 1:], y[delimitadores[2] + 1:], color = 'tab:purple')
-  plt.plot(x[delimitadores[2] + 1:], y[delimitadores[2] + 1:], 'tab:purple', label = "Solsticio invierno")
+  plt.scatter(solsticio_invierno_x, solsticio_invierno_y, color = 'tab:purple')
+  plt.plot(solsticio_invierno_x, solsticio_invierno_y, 'tab:purple', label = "Solsticio invierno")
   plt.legend(loc = "lower right")
   for i in range(len(x)): plt.annotate(str(horas[i]), (x[i], y[i]))
   plt.ylim(altura_gnomon * -7.5, altura_gnomon * 7.5)
