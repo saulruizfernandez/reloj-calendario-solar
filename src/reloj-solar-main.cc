@@ -51,10 +51,10 @@ int main(int argc, char* argv[]) {
       if (altitud < 0) continue;
       acimut = mireloj.Acimut(dec, latitud, hra, altitud);
       // Escribo la etiqueta de estación, hora, altitud, acimut
+      if (!reloj_horizontal && acimut > 90.0 && acimut < 270.0) continue;
       fichero_datos_1 << i << " " << j << " " << altitud << " " << acimut;
       if (!reloj_horizontal) {
-        if (acimut > 90 && acimut < 270) continue;
-        double angulo_long{(acimut >= 270 && acimut <= 360)? (acimut - 270):(90 - acimut)};
+        double angulo_long{(acimut >= 270.0 && acimut <= 360.0)? (acimut - 270.0):(90.0 - acimut)};
         longitud_sombra = mireloj.LongitudSombra(angulo_long, altura_gnomon);
         double angulo_vertical{mireloj.ObtenerAnguloVertical(altitud, acimut)};
         punto = mireloj.CalculaPuntoVertical(longitud_sombra, angulo_vertical);

@@ -19,7 +19,7 @@ def ComprobarDatos(latitud, longitud, altura_gnomon):
 # Función que obtiene la gráfica a partir de los cálculos y la inserta en la ventana
 def ObtenerGrafica(huso, latitud, longitud, altura_gnomon, tipo):
   direccion_abs = os.getcwd()
-  comando = "cd " + direccion_abs + "; cd ../build; make; ./reloj " + str(latitud) + " " + str(longitud) + " " + str(huso) + " " + str(altura_gnomon) + " " + str(tipo)
+  comando = "cd " + direccion_abs + "; cd ../build; ./reloj " + str(latitud) + " " + str(longitud) + " " + str(huso) + " " + str(altura_gnomon) + " " + str(tipo)
   proceso = subprocess.Popen(comando, shell = True)
   proceso.wait() # Espera a que se cree el fichero
   df = pd.read_csv("../build/datos_reloj.csv", delimiter = ' ', usecols = ['Id', 'Hora', 'X', 'Y'])
@@ -38,7 +38,7 @@ def ObtenerGrafica(huso, latitud, longitud, altura_gnomon, tipo):
   equinoccio_otonio_y = []
   solsticio_invierno_x = []
   solsticio_invierno_y = []
-  for i in range(0, len(horas) - 1):
+  for i in range(len(horas)):
     if id_estaciones[i] == 79:
       equinoccio_primavera_x.append(x[i])
       equinoccio_primavera_y.append(y[i])
