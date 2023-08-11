@@ -77,7 +77,10 @@ def ObtenerGrafica(huso, latitud, longitud, altura_gnomon, tipo, rot):
   # Mustro las variaciones en la proyección de la sombra a lo largo del año
   plt.scatter(df_variaciones['X'], df_variaciones['Y'], color = 'k', s = 0.1)
   # Imagen de la rosa de los vientos
-  rosa_vientos = OffsetImage(image.imread('Rosa_de_los_vientos.png'), zoom = 0.2)
+  if tipo == 1:
+    rosa_vientos = OffsetImage(image.imread('Rosa_de_los_vientos.png'), zoom = 0.2)
+  else:
+    rosa_vientos = OffsetImage(image.imread('flechas.png'), zoom = 0.1)
   ann_box = AnnotationBbox(rosa_vientos, (altura_gnomon * 6, altura_gnomon * 5.3), frameon = False)
   ax = plt.subplot()
   ax.add_artist(ann_box)
