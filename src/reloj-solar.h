@@ -38,10 +38,10 @@ class RelojSolar {
   double Lst(const int lt, const double tc) const;
   double Hra(const double lst) const;
   double Dec(const int d) const;
-  double Altitud(const double dec, const double latitud,
-                 const double hra) const;
-  double Acimut(const double dec, const double latitud, const double hra,
-                const double altitud) const;
+  long double Altitud(const double dec, const double latitud,
+                      const double hra) const;
+  long double Acimut(const double dec, const double latitud, const double hra,
+                     const long double altitud) const;
   int Salida(const double latitud, const double declinacion,
              const double tc) const;
   int Puesta(const double latitud, const double declinacion,
@@ -50,7 +50,8 @@ class RelojSolar {
   Punto CalculaPunto(const double longitud_sombra, const double acimut) const;
   // Métodos para el reloj solar vertical
   double ObtenerAnguloVertical(const double altitud, const double acimut) const;
-  Punto CalculaPuntoVertical(const double longitud_sombra, const double angulo_vertical) const;
+  Punto CalculaPuntoVertical(const double longitud_sombra,
+                             const double angulo_vertical) const;
 
  private:
   double latitud{0.0};         // Latitud donde se encuentra el reloj solar

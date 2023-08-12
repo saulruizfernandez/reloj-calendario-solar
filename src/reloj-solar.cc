@@ -84,9 +84,9 @@ double RelojSolar::Dec(const int d) const {
  *
  * @return altitud
  */
-double RelojSolar::Altitud(const double dec, const double latitud,
+long double RelojSolar::Altitud(const double dec, const double latitud,
                            const double hra) const {
-  double altitud{asin(((sin(dec * M_PI / 180) * sin(latitud * M_PI / 180)) +
+  long double altitud{asin(((sin(dec * M_PI / 180) * sin(latitud * M_PI / 180)) +
                        cos(dec * M_PI / 180) * cos(latitud * M_PI / 180) *
                            cos(hra * M_PI / 180))) *
                  180 / M_PI};
@@ -98,9 +98,9 @@ double RelojSolar::Altitud(const double dec, const double latitud,
  *
  * @return acimut
  */
-double RelojSolar::Acimut(const double dec, const double latitud,
-                          const double hra, const double altitud) const {
-  double cuenta{(sin(dec * M_PI / 180) * cos(latitud * M_PI / 180) -
+long double RelojSolar::Acimut(const double dec, const double latitud,
+                          const double hra, const long double altitud) const {
+  long double cuenta{(sin(dec * M_PI / 180) * cos(latitud * M_PI / 180) -
                  cos(dec * M_PI / 180) * sin(latitud * M_PI / 180) *
                      cos(hra * M_PI / 180)) /
                 cos(altitud * M_PI / 180)};
@@ -108,7 +108,7 @@ double RelojSolar::Acimut(const double dec, const double latitud,
     cuenta = 1.0;
   else if (cuenta < -1)
     cuenta = -1.0;
-  double acimut{0.0};
+  long double acimut{0.0};
   if (hra >= 0)
     acimut = 360 - (acos(cuenta) * 180 / M_PI);
   else
@@ -201,7 +201,7 @@ Punto RelojSolar::CalculaPunto(const double longitud_sombra,
  * @return angulo_vertical
  */
 double RelojSolar::ObtenerAnguloVertical(const double altitud, const double acimut) const {
-    double angulo_vertical{((acimut >= 270.0 && acimut <= 360.0)? 180.0:90.0) + altitud};
+    double angulo_vertical{((acimut >= 270.0 && acimut <= 360.0)? (270.0 - altitud):(90.0 + altitud))};
   return angulo_vertical;
 }
 

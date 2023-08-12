@@ -41,7 +41,7 @@ int main(int argc, char* argv[]) {
   fichero_datos_1 << "Id Hora Altitud Acimut X Y\n";
   // Comienza a calcular las curvas de proyección
   for (int i{0}; i < 365; ++i) {
-    if (i != 171 && i != 266 && i != 355 && i != 79) continue;
+    if (i != 171 && i != 266 && i != 355 && i != 79 && i != 222) continue;
     eot = mireloj.Eot(i);
     tc = mireloj.Tc(longitud, lstm, eot);
     dec = mireloj.Dec(i);
