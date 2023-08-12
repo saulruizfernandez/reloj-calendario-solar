@@ -201,11 +201,7 @@ Punto RelojSolar::CalculaPunto(const double longitud_sombra,
  * @return angulo_vertical
  */
 double RelojSolar::ObtenerAnguloVertical(const double altitud, const double acimut) const {
-  double ang_horiz{(acimut >= 270 && acimut <= 360)? (acimut - 270):(90 - acimut)};
-  double ang_vert{altitud};
-  double mod_x{cos(ang_horiz * M_PI / 180)};
-  double mod_y{sin(ang_vert * M_PI / 180)};
-  double angulo_vertical{(atan(mod_y / mod_x) * 180 / M_PI) + ((acimut >= 270.0 && acimut <= 360.0)? 180.0:90.0)};
+    double angulo_vertical{((acimut >= 270.0 && acimut <= 360.0)? 180.0:90.0) + altitud};
   return angulo_vertical;
 }
 

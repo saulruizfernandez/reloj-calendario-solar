@@ -50,7 +50,7 @@ def ObtenerGrafica(huso, latitud, longitud, altura_gnomon, tipo, rot):
     elif id_estaciones[i] == 266:
       equinoccio_otonio_x.append(x[i])
       equinoccio_otonio_y.append(y[i])
-    else:
+    elif id_estaciones[i] == 355:
       solsticio_invierno_x.append(x[i])
       solsticio_invierno_y.append(y[i])
 

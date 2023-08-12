@@ -34,7 +34,7 @@ int main(int argc, char* argv[]) {
   RelojSolar mireloj{latitud, longitud, huso_horario, altura_gnomon};
 
   int lstm{mireloj.Lstm(huso_horario)}, hra;
-  double eot, tc, lst, dec, altitud, acimut, longitud_sombra;
+  double eot, tc, lst, dec, altitud, acimut, angulo_long, angulo_vertical, longitud_sombra;
   Punto punto;
 
   fichero_datos_1.open("datos_reloj.csv", std::ios_base::trunc);
@@ -57,9 +57,15 @@ int main(int argc, char* argv[]) {
       if (!reloj_horizontal && acimut > 90.0 && acimut < 270.0) continue;
       fichero_datos_1 << i << " " << j << " " << altitud << " " << acimut;
       if (!reloj_horizontal) {
-        double angulo_long{(acimut >= 270.0 && acimut <= 360.0)? (acimut - 270.0):(90.0 - acimut)};
+        double ang_horiz{(acimut >= 270 && acimut <= 360)? (acimut - 270):(90 - acimut)};
+        double ang_vert{altitud};
+        double mod_x{cos(ang_horiz * M_PI / 180)};
+        double mod_y{sin(ang_vert * M_PI / 180)};
+        double mod_z{tan(ang_horiz * M_PI / 180) * mod_x};
+        angulo_long = asin(mod_z / sqrt((mod_x * mod_x) + (mod_y * mod_y) + (mod_z * mod_z))) * 180 / M_PI;
+
         longitud_sombra = mireloj.LongitudSombra(angulo_long, altura_gnomon);
-        double angulo_vertical{mireloj.ObtenerAnguloVertical(altitud, acimut)};
+        angulo_vertical = mireloj.ObtenerAnguloVertical(altitud, acimut);
         punto = mireloj.CalculaPuntoVertical(longitud_sombra, angulo_vertical);
       } else {
         longitud_sombra = mireloj.LongitudSombra(altitud, altura_gnomon);
@@ -91,7 +97,13 @@ int main(int argc, char* argv[]) {
       if (acimut < 0.0) acimut += 360.0;
       if (!reloj_horizontal) {
         if (acimut > 90 && acimut < 270) continue;
-        double angulo_long{(acimut >= 270 && acimut <= 360)? (acimut - 270):(90 - acimut)};
+        double ang_horiz{(acimut >= 270 && acimut <= 360)? (acimut - 270):(90 - acimut)};
+        double ang_vert{altitud};
+        double mod_x{cos(ang_horiz * M_PI / 180)};
+        double mod_y{sin(ang_vert * M_PI / 180)};
+        double mod_z{tan(ang_horiz * M_PI / 180) * mod_x};
+        angulo_long = asin(mod_z / sqrt((mod_x * mod_x) + (mod_y * mod_y) + (mod_z * mod_z))) * 180 / M_PI;
+        
         longitud_sombra = mireloj.LongitudSombra(angulo_long, altura_gnomon);
         double angulo_vertical{mireloj.ObtenerAnguloVertical(altitud, acimut)};
         punto = mireloj.CalculaPuntoVertical(longitud_sombra, angulo_vertical);
