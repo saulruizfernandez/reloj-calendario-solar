@@ -5,7 +5,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import matplotlib.image as image
 from matplotlib.offsetbox import (OffsetImage, AnnotationBbox)
-from PIL import Image, ImageTk
+import tkintermapview
 
 # Función que comprueba que los datos introducidos por el usuario son correctos
 def ComprobarDatos(latitud, longitud, altura_gnomon, rot):
