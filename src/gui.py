@@ -4,6 +4,7 @@ from guifunc import *
 ventana = Tk()
 ventana.geometry("1500x700")
 # ventana.configure(background = '#f2dd22')
+ventana.resizable(False, False)
 
 # Opciones para los dropdown
 husos_op = [-12, -11, -10, -9, -8, -7, -6, -5, -4, -3, -2, -1, 0,
@@ -56,11 +57,38 @@ rot_label.place(relx = 0.05, rely = 0.75, anchor = "w")
 entrada_rot = Entry(ventana)
 entrada_rot.place(relx = 0.15, rely = 0.75, anchor = "w")
 
+# Importo el mapa de google maps para seleccionar la localización y el huso horario
+mapa_frame = Frame(ventana)
+mapa_frame.pack()
+mapa_frame.place(anchor = 'center', relx = 0.79, rely = 0.55)
+mapa_wid = tkintermapview.TkinterMapView(mapa_frame, width = 450, height = 450)
+mapa_wid.set_tile_server("https://mt0.google.com/vt/lyrs=s&hl=en&x={x}&y={y}&z={z}&s=Ga", max_zoom=22)
+mapa_wid.pack()
+mapa_wid.set_position(28.4261300, -16.48876) # Posición por defecto del mapa (en Santa Úrsula)
+mapa_wid.set_zoom(6)
+marcador = mapa_wid.set_marker(28.4261300, -16.48876)
+direccion = tkintermapview.convert_coordinates_to_country(28.4261300, -16.48876)
+marcador.set_text(direccion)
+
+# Función que se ejecuta el hacer "click" sobre un lugar del mapa
+def cambiar_coordenadas(coordenadas):
+  print("hola")
+  entrada_lat.delete(0, END)
+  entrada_lon.delete(0, END)
+  entrada_lat.insert(0, coordenadas[0])
+  entrada_lon.insert(0, coordenadas[1])
+  mapa_wid.set_position(coordenadas[0], coordenadas[1])
+  marcador.set_position(coordenadas[0], coordenadas[1])
+  direccion = tkintermapview.convert_coordinates_to_country(coordenadas[0], coordenadas[1])
+  marcador.set_text(direccion)
+
+mapa_wid.add_left_click_map_command(cambiar_coordenadas)
+
 # Botón "Calcular reloj"
 boton_calcular = Button(ventana, text = "Calcular Reloj", command=lambda: CalcularReloj(huso_boton_drop, entrada_lat,
                                                                                         entrada_lon, entrada_alt,
                                                                                         error_label, tipo_boton_drop,
-                                                                                        entrada_rot),
+                                                                                        entrada_rot, mapa_wid, marcador),
                         background = "blue", foreground = "white")
 boton_calcular.place(relx = 0.15, rely = 0.85, anchor = "center")
 
@@ -138,12 +166,5 @@ frame_opciones.place(anchor = "nw", relx = 0.30, rely = 0.93)
 imagen_opciones = PhotoImage(file = "./opciones.png")
 label_opciones = Label(frame_opciones, image = imagen_opciones)
 label_opciones.pack()
-
-# Importo el mapa de google maps para seleccionar la localización y el huso horario
-mapa_frame = Frame(ventana)
-mapa_frame.pack()
-mapa_frame.place(anchor = 'center', relx = 0.79, rely = 0.55)
-mapa_wid = tkintermapview.TkinterMapView(mapa_frame, width = 450, height = 450)
-mapa_wid.pack()
 
 ventana.mainloop()

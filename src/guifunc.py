@@ -88,7 +88,7 @@ def ObtenerGrafica(huso, latitud, longitud, altura_gnomon, tipo, rot):
   plt.show()
 
 # Función que se ejecuta al pulsar el botón "Calcular reloj"
-def CalcularReloj(huso_boton_drop, entrada_lat, entrada_lon, entrada_alt, error_label, tipo_drop, rotacion_norte):
+def CalcularReloj(huso_boton_drop, entrada_lat, entrada_lon, entrada_alt, error_label, tipo_drop, rotacion_norte, mapa_wid, marcador):
   huso = huso_boton_drop.get()
   tipo = 0
   if (tipo_drop.get() == "Horizontal"): tipo = 1
@@ -97,6 +97,7 @@ def CalcularReloj(huso_boton_drop, entrada_lat, entrada_lon, entrada_alt, error_
     longitud = float(entrada_lon.get())
     altura_gnomon = float(entrada_alt.get())
     rot = float(rotacion_norte.get())
+    CoordenadasAMapa(mapa_wid, marcador, latitud, longitud)
   except:
     latitud = -1
     longitud = -1
@@ -107,3 +108,11 @@ def CalcularReloj(huso_boton_drop, entrada_lat, entrada_lon, entrada_alt, error_
   else:
     error_label.place_forget()
     ObtenerGrafica(huso, latitud, longitud, altura_gnomon, tipo, rot)
+
+# Función que marca y enfoca en el mapa el lugar que ha seleccionado el usuario
+def CoordenadasAMapa(mapa_wid, marcador, lat, lon):
+  mapa_wid.set_position(lat, lon)
+  mapa_wid.set_zoom(6)
+  marcador.set_position(lat, lon)
+  direccion = tkintermapview.convert_coordinates_to_country(28.4261300, -16.48876)
+  marcador.set_text(direccion)
