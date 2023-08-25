@@ -5,8 +5,17 @@ Sundial calculator, which also indicates the season of the year, at any given lo
 Just available for most Linux distributions for the moment. To install the program you just need to download into your local machine the repo, navigate to the directory: {PARENT_FOLDER}/dist/ and execute in the bash terminal: ./gui
 ## Usage
 To use the sundial calculator, just navigate in the map to the location where the instrument will be built, specify the timezone, height of the gnomon, orientation of the wall, and just click the "Calculate button"! :metal:
-A new tab will appear with the meassurements of the sundial, which can be saved into your local computer.
-Important to use the program with internet connection, so that the maps can be loaded:exclamation:
+A new tab will appear with the meassurements of the sundial, which can be saved into your local computer.\
+**_Important_ to use the program with internet connection, so that the maps can be loaded**:exclamation:\
+The .csv file outputs the meassurements of the instrument, specifying the season of each projection curve as the day number of the year in the "Id" column\
+<img
+  src="./programa_vista.png"
+  title="Vista del programa"
+  style="display: inline-block; margin: 0 auto; max-width: 300px">\
+<img
+  src="./grafica_vista.png"
+  title="Vista de la gráfica"
+  style="display: inline-block; margin: 0 auto; max-width: 300px">\
 ## Code and project details
 The code is well documented, and free to use for modifications and improovements. All calculations are held by c++ programs, but the gui is developed using Python3. It is recommended the usage of a virtual environment to encapsule the Python requirements. To download the requirements, type into your terminal (in the parent folder of the project):
 ```
