@@ -72,7 +72,6 @@ marcador.set_text(direccion)
 
 # Función que se ejecuta el hacer "click" sobre un lugar del mapa
 def cambiar_coordenadas(coordenadas):
-  print("hola")
   entrada_lat.delete(0, END)
   entrada_lon.delete(0, END)
   entrada_lat.insert(0, coordenadas[0])
@@ -122,8 +121,8 @@ texto_instrucciones_numeros = '''
 '''
 texto_instrucciones = '''
 Selecciona tu huso horario mediante el menú desplegable
-Ingresa tu latitud y longitud en grados decimales (usar
-punto en lugar de coma)
+Ingresa tu latitud y longitud en grados decimales, o pincha en
+el mapa la zona donde se vaya a situar el reloj solar
 Ingresa la altura del gnomon en metros (por altura se
 entiende la distancia mínima de separación entre la superficie
 plana del reloj y el extremo más alejado del gnomon)
