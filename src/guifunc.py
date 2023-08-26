@@ -104,7 +104,7 @@ def CalcularReloj(huso_boton_drop, entrada_lat, entrada_lon, entrada_alt, error_
     altura_gnomon = -1
     rot = -1
   if (ComprobarDatos(latitud, longitud, altura_gnomon, rot) == False):
-    error_label.place(relx = 0.5, rely = 0.6, anchor = "w")
+    error_label.place(relx = 0.05, rely = 0.18, anchor = "w")
   else:
     error_label.place_forget()
     ObtenerGrafica(huso, latitud, longitud, altura_gnomon, tipo, rot)

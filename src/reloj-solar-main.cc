@@ -41,7 +41,7 @@ int main(int argc, char* argv[]) {
   fichero_datos_1 << "Id Hora Altitud Acimut X Y\n";
   // Comienza a calcular las curvas de proyección
   for (int i{0}; i < 365; ++i) {
-    if (i != 171 && i != 266 && i != 355 && i != 79 && i != 222) continue;
+    if (i != 171 && i != 266 && i != 355 && i != 79) continue;
     eot = mireloj.Eot(i);
     tc = mireloj.Tc(longitud, lstm, eot);
     dec = mireloj.Dec(i);
@@ -51,7 +51,7 @@ int main(int argc, char* argv[]) {
       altitud = mireloj.Altitud(dec, latitud, hra);
       if (altitud < 0) continue;
       acimut = mireloj.Acimut(dec, latitud, hra, altitud);
-      acimut -= rotacion_norte;
+      if(!reloj_horizontal) acimut -= rotacion_norte; // Agrego la rot norte en el caso de un reloj vertical
       if (acimut < 0.0) acimut += 360.0;
       // Escribo la etiqueta de estación, hora, altitud, acimut
       if (!reloj_horizontal && acimut > 90.0 && acimut < 270.0) continue;
@@ -93,7 +93,7 @@ int main(int argc, char* argv[]) {
       altitud = mireloj.Altitud(dec, latitud, hra);
       if (altitud < 0) continue;
       acimut = mireloj.Acimut(dec, latitud, hra, altitud);
-      acimut -= rotacion_norte;
+      if (!reloj_horizontal) acimut -= rotacion_norte;
       if (acimut < 0.0) acimut += 360.0;
       if (!reloj_horizontal) {
         if (acimut > 90 && acimut < 270) continue;
